@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/client";
 
 import { hashPassword, verifyPassword } from "../../../lib/auth";
-import { connectToDatabse } from "../../../lib/db";
+import { connectToDatabase } from "../../../lib/db";
 
 async function handler(req, res) {
   if (req.method !== "PATCH") {
@@ -19,13 +19,15 @@ async function handler(req, res) {
   const oldPassword = req.body.oldPassword;
   const newPassword = req.body.newPassword;
 
-  const client = await connectToDatabse();
+  const client = await connectToDatabase();
+
   const usersCollection = client.db().collection("users");
+
   const user = await usersCollection.findOne({ email: userEmail });
 
   if (!user) {
+    res.status(404).json({ message: "User not found." });
     client.close();
-    res.status(404).json({ message: "User not found" });
     return;
   }
 
@@ -45,6 +47,7 @@ async function handler(req, res) {
     { email: userEmail },
     { $set: { password: hashedPassword } }
   );
+
   client.close();
   res.status(200).json({ message: "Password updated!" });
 }

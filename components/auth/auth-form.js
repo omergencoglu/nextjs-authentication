@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
-import { useRouter } from "next/router";
-
 import { signIn } from "next-auth/client";
+import { useRouter } from "next/router";
 
 import classes from "./auth-form.module.css";
 
@@ -40,7 +39,7 @@ function AuthForm() {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
-    //optional: add validation
+    // optional: Add validation
 
     if (isLogin) {
       const result = await signIn("credentials", {
@@ -50,7 +49,7 @@ function AuthForm() {
       });
 
       if (!result.error) {
-        //set some auth state
+        // set some auth state
         router.replace("/profile");
       }
     } else {
